@@ -92,21 +92,9 @@ annotation_colours <- list(
   )
 )
 
-save_per_line_panels(
-  matched_correlation, "heatmap_logfc_correlation_phase_matched",
-  "logFC vs mRuby, phase-matched cells",
-  diverging = TRUE, annotation_colours = annotation_colours
-)
-
-# publication version: titles stripped, the caption carries the description
-save_per_line_panels(
-  matched_correlation, "figure_guide_correlation",
-  "logFC vs mRuby, phase-matched cells",
-  diverging = TRUE, annotation_colours = annotation_colours, show_titles = FALSE
-)
-
-# G1-only correlations as a standalone two-panel figure, so that a figure set
-# built on G1-restricted cells stays internally consistent
+# Figure 1: G1-only correlations. The phase-matched variant is not emitted as a
+# figure; correlation_phase_matched_summary.csv records it as the check that the
+# effect is not an artefact of restricting to one phase.
 g1_members <- strata |> filter(phase == "G1") |> pull(sample_id)
 g1_counts <- strata_counts[, g1_members]
 colnames(g1_counts) <- str_remove(g1_members, "\\|[^|]+$")
@@ -130,27 +118,3 @@ save_per_line_panels(
   "logFC vs mRuby, G1 cells only",
   diverging = TRUE, annotation_colours = annotation_colours, show_titles = FALSE
 )
-
-# one panel per usable stratum, each on its own scale
-png(here("output", "heatmap_logfc_correlation_by_phase.png"),
-  width = 6.5 * nrow(phase_correlations), height = 6.5, units = "in", res = 300
-)
-grid.newpage()
-pushViewport(viewport(layout = grid.layout(1, nrow(phase_correlations))))
-pwalk(phase_correlations, \(cell_line, phase, correlation, ...) {
-  position <- which(
-    phase_correlations[["cell_line"]] == cell_line & phase_correlations[["phase"]] == phase
-  )
-  pushViewport(viewport(layout.pos.row = 1, layout.pos.col = position))
-  draw(
-    within_line_heatmap(
-      correlation, str_glue("{cell_line} - {phase} phase"),
-      annotation_colours, str_glue("r ({phase})"), diverging = TRUE
-    ),
-    newpage = FALSE, merge_legend = TRUE,
-    heatmap_legend_side = "right", annotation_legend_side = "right"
-  )
-  popViewport()
-})
-popViewport()
-dev.off()

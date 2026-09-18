@@ -1,0 +1,7 @@
+# source data: 707 MB archive and the unpacked h5ad on scratch
+SYM10X0_processed_filtered.h5ad.zip
+data/
+
+# renv library
+renv/library/
+renv/staging/

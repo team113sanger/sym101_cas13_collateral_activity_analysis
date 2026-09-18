@@ -4,7 +4,7 @@ library(circlize)
 library(here)
 
 # Shared plotting helpers for the SYM10X0 correlation heatmaps.
-# Sourced by plot_correlation_heatmaps.R and correlation_by_phase.R.
+# Sourced by correlation_by_phase.R, figure_lfc_histogram.R and transcript_mass_budget.R.
 
 read_corr <- function(path) {
   read_csv(path, show_col_types = FALSE) |>

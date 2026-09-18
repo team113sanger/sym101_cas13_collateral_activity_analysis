@@ -4,10 +4,9 @@ library(edgeR)
 library(limma)
 library(fgsea)
 library(msigdbr)
-library(ggrepel)
-library(patchwork)
 
 # Differential expression and GSEA for the shared Cas13d collateral response.
+# Analysis only: writes the DE and GSEA tables that the figure scripts read.
 # Guide-level pseudobulks are the replicates: 8 targeting vs 3 non-targeting
 # (mRuby) per cell line, tested within line and as a cross-line average.
 
@@ -122,40 +121,6 @@ cat("\n=== on-target knockdown per guide family ===\n")
 print(on_target)
 write_csv(on_target, here("output", "de_on_target_control.csv"))
 
-plot_volcano <- function(res, title) {
-  labelled <- res |>
-    filter(adj.P.Val < fdr_cutoff) |>
-    slice_max(abs(logFC) * -log10(adj.P.Val), n = 25)
-
-  res |>
-    mutate(
-      direction = case_when(
-        adj.P.Val >= fdr_cutoff ~ "ns",
-        logFC > 0 ~ "up",
-        .default = "down"
-      )
-    ) |>
-    ggplot(aes(logFC, -log10(adj.P.Val))) +
-    geom_point(aes(colour = direction), size = 0.6, alpha = 0.6) +
-    geom_text_repel(
-      data = labelled, aes(label = gene),
-      size = 2.4, max.overlaps = 20, segment.size = 0.2
-    ) +
-    scale_colour_manual(
-      values = c(ns = "grey80", up = "#B2182B", down = "#2166AC"),
-      guide = "none"
-    ) +
-    labs(title = title, x = "log2 FC (targeting vs mRuby)", y = "-log10 FDR") +
-    theme_bw(base_size = 9)
-}
-
-volcanoes <- imap(results, \(res, contrast) plot_volcano(res, contrast))
-ggsave(
-  here("output", "volcano_targeting_vs_control.png"),
-  wrap_plots(volcanoes, nrow = 1),
-  width = 12, height = 4.5, dpi = 300
-)
-
 # Sensitivity analysis: repeat the per-line contrasts on G1 cells only, so the
 # phase shift cannot contribute at all
 g1_counts <- read_csv(here("output", "pseudobulk_counts_g1.csv"), show_col_types = FALSE) |>
@@ -254,43 +219,3 @@ gsea |>
   filter(padj < fdr_cutoff) |>
   count(contrast, collection, direction = if_else(NES > 0, "up", "down")) |>
   print(n = Inf)
-
-plot_gsea <- function(gsea_table, contrast_name, collection_name, n_top = 15) {
-  gsea_table |>
-    filter(contrast == contrast_name, collection == collection_name, padj < fdr_cutoff) |>
-    slice_max(abs(NES), n = n_top) |>
-    mutate(
-      pathway = pathway |>
-        str_remove("^(HALLMARK|REACTOME|GOBP)_") |>
-        str_replace_all("_", " ") |>
-        str_trunc(55) |>
-        fct_reorder(NES)
-    ) |>
-    ggplot(aes(NES, pathway, fill = NES > 0)) +
-    geom_col() +
-    scale_fill_manual(
-      values = c(`TRUE` = "#B2182B", `FALSE` = "#2166AC"), guide = "none"
-    ) +
-    labs(
-      title = str_glue("{contrast_name} - {collection_name}"),
-      x = "NES", y = NULL
-    ) +
-    theme_bw(base_size = 8)
-}
-
-# the two cleanest views: A549 unaffected by the phase shift, H1299 restricted
-# to G1 cells so composition cannot contribute
-gsea_panels <- expand_grid(
-  contrast = c("A549_allcells", "H1299_g1only"),
-  collection = names(gene_sets)
-) |>
-  pmap(\(contrast, collection) plot_gsea(gsea, contrast, collection))
-
-ggsave(
-  here("output", "gsea_shared_response.png"),
-  wrap_plots(gsea_panels, ncol = 2, byrow = FALSE) + plot_annotation(
-    title = "Pathways enriched in targeting vs non-targeting guides",
-    subtitle = "A549 (all cells) and H1299 (G1 cells only, composition-controlled)"
-  ),
-  width = 13, height = 11, dpi = 300
-)
