@@ -1,5 +1,7 @@
 # SYM10X0 — Cas13d collateral activity
 
+[![DOI](https://zenodo.org/badge/1461365821.svg)](https://doi.org/10.5281/zenodo.24310447)
+
 Analysis of a Cas13d perturb-seq screen in A549 and NCI-H1299, testing whether
 guide-directed Cas13d produces a target-independent transcriptional change.
 
