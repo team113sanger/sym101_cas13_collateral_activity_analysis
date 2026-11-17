@@ -61,3 +61,17 @@ versus guide-that-does-not. Library-size normalisation measures relative
 composition, so a uniform loss of transcripts is invisible and what is observed
 is a redistribution. Effect sizes carry selection bias: the ribosomal module was
 chosen after inspecting genome-wide enrichment results, with no held-out data.
+
+## Authors
+
+This analysis was performed by Jamie Billington (<jb63@sanger.ac.uk>) in the
+Adams group at the Wellcome Sanger Institute.
+
+## Contact
+
+- Jamie Billington (<jb63@sanger.ac.uk>)
+
+## Licence
+
+This repository is released under the GNU Affero General Public License v3.0.
+See [LICENSE](LICENSE) for the full text.

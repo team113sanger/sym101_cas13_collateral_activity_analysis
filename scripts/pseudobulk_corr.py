@@ -8,6 +8,8 @@ and correlated.  Two views are produced:
      is where a shared Cas13d collateral response would show up
 """
 
+from pathlib import Path
+
 import h5py
 import numpy as np
 import pandas as pd
@@ -17,8 +19,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+ROOT = Path(__file__).resolve().parents[1]  # repository root
 H5AD = "/lustre/scratch125/casm/teams/team113/secure-lustre/team113/sym10x_corr_tmp/SYM10X0_processed_filtered.h5ad"
-OUT = "/home/ubuntu/projects/symphony_10x_collateral/output"
+OUT = str(ROOT / "output")
 
 MIN_CELLS = 50        # drop pseudobulks built from too few cells
 MIN_MEAN_CPM = 1.0    # gene detection filter applied on the pseudobulk matrix

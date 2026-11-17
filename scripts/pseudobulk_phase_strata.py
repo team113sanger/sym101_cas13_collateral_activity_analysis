@@ -12,13 +12,16 @@ A549 has only 4-14 G2M cells per guide, so its non-G1 strata are dropped by the
 cell-count threshold; the matched view still covers both lines.
 """
 
+from pathlib import Path
+
 import h5py
 import numpy as np
 import pandas as pd
 import scipy.sparse as sp
 
-H5AD = "/home/ubuntu/projects/symphony_10x_collateral/data/h5ad/SYM10X0_processed_filtered.h5ad"
-OUT = "/home/ubuntu/projects/symphony_10x_collateral/output"
+ROOT = Path(__file__).resolve().parents[1]  # repository root
+H5AD = str(ROOT / "data" / "h5ad" / "SYM10X0_processed_filtered.h5ad")
+OUT = str(ROOT / "output")
 BLOCK = 2000
 MIN_CELLS = 100
 SEED = 1
