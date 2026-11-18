@@ -1,0 +1,13 @@
+{
+  "title": "sym101_cas13_collateral_activity_analysis: Cas13d collateral activity (SYM10X0)",
+  "description": "Analysis of a Cas13d perturb-seq screen in A549 and NCI-H1299 testing for target-independent transcriptional effects: pseudobulk guide correlations, cell-cycle-stratified differential expression, GSEA and ribosomal-protein module controls. Sub-analysis of the manuscript \"Uncovering RNA Dependencies in Lung Cancer through CRISPR-Cas13d Functional Genomics\".",
+  "upload_type": "software",
+  "license": "agpl-3.0-only",
+  "creators": [
+    {
+      "name": "Billington, Jamie",
+      "affiliation": "Wellcome Sanger Institute, Cambridge, UK"
+    }
+  ],
+  "keywords": ["CRISPR-Cas13d", "collateral activity", "perturb-seq", "single-cell", "lung cancer"]
+}
